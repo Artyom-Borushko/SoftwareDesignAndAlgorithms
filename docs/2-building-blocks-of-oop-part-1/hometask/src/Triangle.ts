@@ -3,23 +3,19 @@ import { Point } from "./Point";
 
 export class Triangle extends Shape {
   constructor(pointA: Point, pointB: Point, pointC: Point);
-  constructor(pointA: Point, pointB: Point, pointC: Point, color: string, filled: boolean);
+  constructor(pointA: Point, pointB: Point, pointC: Point, color?: string, filled?: boolean);
   constructor(...args: any[]) {
     const [pointA, pointB, pointC, color, filled] = args;
-    if (!pointA || !pointB || !pointC) {
-      throw new Error("Triangle should contain at least 3 points");
-    }
-    if (args.length === 1) {
-      super([pointA, pointB, pointC]);
-    }
-    if (args.length === 3) {
+    if (color && filled) {
       super([pointA, pointB, pointC], color, filled);
+      return;
     }
+    super([pointA, pointB, pointC]);
   }
 
   toString(): string {
     const formattedPoints = this.points.map((point: Point, index: number) => {
-      return `v${index + 1}=${point.toString()}`;
+      return `v${index + 1}=${point}`;
     });
     return `Triangle[${formattedPoints.join(",")}]`;
   }

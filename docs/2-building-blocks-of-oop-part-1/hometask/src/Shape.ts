@@ -28,8 +28,7 @@ export abstract class Shape {
 
   toString(): string {
     const isFilled = this.filled ? "filled" : "not filled";
-    const pointsAsString = this.points.map((point: Point) => point.toString());
-    return `A Shape with color of ${this.color} and ${isFilled}. Points: ${pointsAsString.join(", ")}.`;
+    return `A Shape with color of ${this.color} and ${isFilled}. Points: ${this.points.join(", ")}.`;
   }
 
   getPerimeter = (): number => {

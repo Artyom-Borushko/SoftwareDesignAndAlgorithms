@@ -2,7 +2,7 @@ import { Comparable } from "./Comparable";
 
 export abstract class Item implements Comparable<Item> {
   private readonly id: number;
-  private static idCounter = 1;
+  static idCounter = 1;
 
   constructor(readonly name: string, public value: number, public weight: number) {
     this.id = Item.idCounter++;

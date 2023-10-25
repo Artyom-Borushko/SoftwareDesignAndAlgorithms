@@ -1,14 +1,15 @@
 import { Item } from "./Item";
 
 export abstract class Weapon extends Item {
-  protected static readonly MODIFIER_CHANGE_RATE = 0.05;
+  static MODIFIER_CHANGE_RATE = 0.05;
   protected damageModifier = 0;
   protected durabilityModifier = 0;
+  private isBroken = false;
 
   constructor(
     name: string,
     protected baseDamage: number,
-    protected baseDurability: number,
+    private baseDurability: number,
     value: number,
     weight: number
   ) {
@@ -16,12 +17,16 @@ export abstract class Weapon extends Item {
   }
 
   use(): string {
-    if (this.baseDurability <= 0) {
+    if (this.isBroken) {
       return `You can't use the ${this.name}, it is broken.`;
     }
-    this.baseDurability = this.baseDurability - Weapon.MODIFIER_CHANGE_RATE;
+    this.durabilityModifier = this.durabilityModifier - Weapon.MODIFIER_CHANGE_RATE;
     const weaponUsageMessage = `You use the ${this.name}, dealing ${Weapon.MODIFIER_CHANGE_RATE} points of damage.`;
-    return this.baseDurability === 0 ? weaponUsageMessage + `\nThe ${this.name} breaks.` : weaponUsageMessage;
+    if (this.getEffectiveDurability() === 0) {
+      this.isBroken = true;
+      return weaponUsageMessage + `\nThe ${this.name} breaks.`;
+    }
+    return weaponUsageMessage;
   }
 
   abstract polish(): void;

@@ -9,10 +9,12 @@ export class Inventory {
   }
 
   sort(comparator?: ItemComparator): Item[] {
-    return comparator ? this.items.sort(comparator.compare) : this.items.sort((a, b) => a.value - b.value);
+    return comparator
+      ? this.items.sort(comparator.compare.bind(comparator))
+      : this.items.sort((a, b) => a.compareTo(b));
   }
 
   toString(): string {
-    return this.items.length ? this.items.join(", ") : "";
+    return this.items.join(", ");
   }
 }

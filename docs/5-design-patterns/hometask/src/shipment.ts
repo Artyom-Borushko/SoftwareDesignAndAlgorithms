@@ -1,4 +1,5 @@
 import { ShipmentState } from './types/types';
+import { Shipper } from './shippers/shipper';
 
 export class Shipment {
   protected state: ShipmentState;
@@ -14,11 +15,11 @@ export class Shipment {
     return ++Shipment.mockedId;
   }
 
-  ship() {
+  ship(shipper: Shipper) {
     const shippingCost = this.state.weight * 0.39;
     return `Shipment with the ID ${this.state.shipmentID} will be` +
       ` picked up from ${this.state.fromAddress}, ${this.state.fromZipCode}` +
       ` and shipped to ${this.state.toAddress}, ${this.state.toZipCode}\n` +
-      `Cost = ${shippingCost.toFixed(1)}`;
+      `Cost = ${shipper.getCost(this.state)}`;
   }
 }

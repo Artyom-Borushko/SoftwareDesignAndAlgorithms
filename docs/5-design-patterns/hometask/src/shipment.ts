@@ -1,7 +1,6 @@
 import { ShipmentState } from './types/types';
-import { Shipper } from './shippers/shipper';
 
-export class Shipment {
+export abstract class Shipment {
   protected state: ShipmentState;
   private static mockedId = 0;
 
@@ -9,17 +8,15 @@ export class Shipment {
     this.state = {...state, shipmentID: state.shipmentID || this.getShipmentID()};
   }
 
-  getInstance() {};
+  abstract getInstance(): any;
 
   getShipmentID() {
     return ++Shipment.mockedId;
   }
 
-  ship(shipper: Shipper) {
-    const shippingCost = this.state.weight * 0.39;
+  ship() {
     return `Shipment with the ID ${this.state.shipmentID} will be` +
       ` picked up from ${this.state.fromAddress}, ${this.state.fromZipCode}` +
-      ` and shipped to ${this.state.toAddress}, ${this.state.toZipCode}\n` +
-      `Cost = ${shipper.getCost(this.state)}`;
+      ` and shipped to ${this.state.toAddress}, ${this.state.toZipCode}\n`
   }
 }

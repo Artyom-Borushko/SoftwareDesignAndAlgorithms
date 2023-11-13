@@ -4,14 +4,15 @@ import { Shipper } from './shippers/shipper';
 import { ChicagoSprintShipper } from './shippers/chicago-sprint-shipper';
 import { PacificParcelShipper } from './shippers/pacific-parcel-shipper';
 import { AirEastShipper } from './shippers/air-east-shipper';
+import { Letter } from './shipments/letter';
+import { Package } from './shipments/package';
+import { Oversize } from './shipments/oversize';
 
 export class Client {
   private shipment: ShipmentState;
-  public shipmentInstance: Shipment;
 
   constructor(shipment: ShipmentState) {
     this.shipment = shipment;
-    this.shipmentInstance = new Shipment(this.shipment);
   }
 
 
@@ -34,5 +35,11 @@ export class Client {
       default:
         return new AirEastShipper().getInstance();
     }
+  }
+
+  getShipment(): Shipment {
+    if (this.shipment.weight <= 15) return new Letter(this.shipment, this.getShipper())
+    else if (this.shipment.weight <= 160) return new Package(this.shipment, this.getShipper())
+    else return new Oversize(this.shipment, this.getShipper());
   }
 }

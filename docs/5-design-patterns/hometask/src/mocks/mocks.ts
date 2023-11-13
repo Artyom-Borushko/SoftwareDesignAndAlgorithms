@@ -7,4 +7,7 @@ export const shipment: ShipmentState = {
   fromZipCode: '12345',
   toAddress: 'Abcd, CA, CA',
   toZipCode: '56789',
+  isFragile: true,
+  doNotLeave: false,
+  returnReceiptRequested: true,
 };

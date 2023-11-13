@@ -5,4 +5,7 @@ export type ShipmentState = {
   fromZipCode: string;
   toAddress: string;
   toZipCode: string;
+  isFragile: boolean;
+  doNotLeave: boolean;
+  returnReceiptRequested: boolean;
 }

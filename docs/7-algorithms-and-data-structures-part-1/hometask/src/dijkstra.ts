@@ -6,66 +6,55 @@ import { PriorityQueue } from './priority-queue';
 export class Dijkstra implements DijkstraInterface<Vertex> {
   constructor(private graph: WeightedGraph) {};
 
-  findAllShortestPaths(vertex: Vertex): Record<string, Path> {
-    let result: Record<string, Path> = {};
-
-    for (const vertexKey in this.graph.adjacencyList) {
-      if (vertex.key !== vertexKey) {
-        result = {
-          ...result,
-          [vertexKey]: this.findShortestPath(vertex, new Vertex(vertexKey)),
-        };
-      }
-    }
-
-    return result;
+  findShortestPath(vertex1: Vertex, vertex2: Vertex): Path {
+    return this.findAllShortestPaths(vertex1)[vertex2.key];
   }
 
-  findShortestPath(vertex1: Vertex, vertex2: Vertex): Path {
-    const distance = {};
-    const backtrace = {};
-    let currentNodeKey: string;
-    let path = [];
+  findAllShortestPaths(vertex: Vertex): Record<string, Path> {
     const priorityQueue = new PriorityQueue();
+    let paths: Record<string, Path> = {};
 
     for (const vertexKey in this.graph.adjacencyList) {
-      if (vertexKey === vertex1.key) {
-        distance[vertexKey] = 0;
-        priorityQueue.enqueue(vertexKey, 0);
-      } else {
-        distance[vertexKey] = Infinity;
-        priorityQueue.enqueue(vertexKey, Infinity);
-      }
-      backtrace[vertexKey] = null;
+      paths = {
+        ...paths,
+        [vertexKey]: { path: [], distance: Infinity },
+      };
     }
 
-    while (priorityQueue.collection.length) {
-      currentNodeKey = priorityQueue.dequeue().key;
-      if (currentNodeKey === vertex2.key) {
-        while (backtrace[currentNodeKey]) {
-          path.push(currentNodeKey);
-          currentNodeKey = backtrace[currentNodeKey];
-        }
-        break;
-      }
+    const visited: Record<string, boolean> = {};
+    priorityQueue.enqueue(vertex);
+    visited[vertex.key] = true;
+    paths[vertex.key] = { path: [vertex.key], distance: 0 };
 
-      if (currentNodeKey || distance
-        [currentNodeKey] !== Infinity) {
-        for (const neighborNode of this.graph.adjacencyList[currentNodeKey]) {
-          let distanceFromStartingNode = distance[currentNodeKey] + neighborNode.weight;
-          let nextNeighborNode = neighborNode.vertex;
-          if (distanceFromStartingNode < distance[nextNeighborNode]) {
-            distance[nextNeighborNode] = distanceFromStartingNode;
-            backtrace[nextNeighborNode] = currentNodeKey;
-            priorityQueue.enqueue(nextNeighborNode, distanceFromStartingNode);
-          }
+    while (priorityQueue.collection.length > 0) {
+      const currentNode: any = priorityQueue.dequeue();
+      const currentNodePath = currentNode.key ? paths[currentNode.key] : paths[currentNode.vertex];
+      const adjacentVertices = currentNode.key
+        ? this.graph.adjacencyList[currentNode.key]
+        : this.graph.adjacencyList[currentNode.vertex];
+
+      adjacentVertices.forEach((adjacentVertex: any) => {
+        if (!adjacentVertex) {
+          return;
         }
-      }
+
+        const adjacentPath = paths[adjacentVertex.vertex];
+        const distance = currentNodePath.distance + adjacentVertex.weight;
+
+        if (!adjacentPath || distance < adjacentPath.distance) {
+          paths[adjacentVertex.vertex] = {
+            path: [...currentNodePath.path, adjacentVertex.vertex],
+            distance,
+          };
+        }
+
+        if (!visited[adjacentVertex.vertex]) {
+          visited[adjacentVertex.vertex] = true;
+          priorityQueue.enqueue(adjacentVertex);
+        }
+      });
     }
 
-    return {
-      path: (distance[vertex2.key] !== Infinity) ? path.concat(currentNodeKey).reverse() : [],
-      distance: distance[vertex2.key],
-    };
+    return paths;
   }
 }

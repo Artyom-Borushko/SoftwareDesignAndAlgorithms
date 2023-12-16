@@ -7,7 +7,6 @@ export const mockShipment: ShipmentInterface = {
   fromZipCode: '12345',
   toAddress: 'Abcd, CA, CA',
   toZipCode: '56789',
-  // isFragile: true,
-  // doNotLeave: false,
-  // returnReceiptRequested: true,
 };
+
+export const mockFragileMarks = ['fragile', 'do not leave', 'return receipt'];

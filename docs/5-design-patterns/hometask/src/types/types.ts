@@ -5,9 +5,6 @@ export interface ShipmentInterface {
   fromZipCode: string;
   toAddress: string;
   toZipCode: string;
-  // isFragile: boolean;
-  // doNotLeave: boolean;
-  // returnReceiptRequested: boolean;
 }
 
 export enum ShipmentType {
@@ -18,5 +15,6 @@ export enum ShipmentType {
 
 export interface ShipmentResult {
   shippedShipment: ShipmentInterface,
-  shippingCost: string
+  shippingCost: string,
+  tags?: Array<string>,
 }

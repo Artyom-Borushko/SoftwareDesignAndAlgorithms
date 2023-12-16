@@ -9,3 +9,14 @@ export interface ShipmentInterface {
   // doNotLeave: boolean;
   // returnReceiptRequested: boolean;
 }
+
+export enum ShipmentType {
+  LETTER ='Letter',
+  PACKAGE = 'Package',
+  OVERSIZE = 'Oversize'
+}
+
+export interface ShipmentResult {
+  shippedShipment: ShipmentInterface,
+  shippingCost: string
+}

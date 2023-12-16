@@ -1,13 +1,15 @@
-import { ShipmentInterface } from '../types/types';
+import { ShipmentInterface, ShipmentResult } from '../types/types';
 import { ChicagoSprintShipper } from '../shippers/chicago-sprint-shipper';
 import { Shipper } from '../shippers/shipper';
 import { AirEastShipper } from '../shippers/air-east-shipper';
 import { PacificParcelShipper } from '../shippers/pacific-parcel-shipper';
 
-export class Shipment {
-  private shipment: ShipmentInterface;
+export abstract class Shipment {
+  protected shipment: ShipmentInterface;
+  protected shipper: Shipper;
   private static mockedId = 0;
-  private shipper: Shipper;
+  public static readonly maxLetterWeight = 15;
+  public static readonly maxPackageWeight = 160;
 
   constructor(shipment: ShipmentInterface) {
     this.shipment = {...shipment, shipmentID: shipment.shipmentID || this.getShipmentID()};
@@ -34,11 +36,6 @@ export class Shipment {
     this.shipper = this.getShipper(this.shipment.fromZipCode);
   }
 
-  public ship(): string {
-    const shippingCost = this.shipment.weight * this.shipper.getCost();
-    return `Shipment with the ID ${this.shipment.shipmentID} will be` +
-      ` picked up from ${this.shipment.fromAddress}, ${this.shipment.fromZipCode}` +
-      ` and shipped to ${this.shipment.toAddress}, ${this.shipment.toZipCode}\n` +
-      `Cost = ${shippingCost.toFixed(1)}`;
-  }
+  abstract getInstance(shipment: ShipmentInterface): Shipment;
+  abstract ship(): ShipmentResult;
 }
